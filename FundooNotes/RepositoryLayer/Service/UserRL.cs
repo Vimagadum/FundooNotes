@@ -1,9 +1,15 @@
 ﻿using CommonLayer.Model;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
 using System.Text;
 
 namespace RepositoryLayer.Service
@@ -11,9 +17,11 @@ namespace RepositoryLayer.Service
     public class UserRL:IUserRL
     {
         private readonly FundooContext fundooContext;
-        public UserRL(FundooContext fundooContext)
+        private readonly IConfiguration _Toolsettings;
+        public UserRL(FundooContext fundooContext, IConfiguration _Toolsettings)
         {
             this.fundooContext = fundooContext;
+            this._Toolsettings = _Toolsettings;
 
         }
         public UserEntity Registration(UserRegistration User)
@@ -41,6 +49,36 @@ namespace RepositoryLayer.Service
 
                 throw;
             }
+        }
+        public string login(UserLogin userLogin)
+        {
+            try
+            {
+                var user = fundooContext.User.Where(x => x.Email == userLogin.Email && x.Password == userLogin.Password).FirstOrDefault();
+                string token = GenerateSecurityToken(user.Email, user.Id);
+                return token;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        private string GenerateSecurityToken(string Email, long Id)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Toolsettings["Jwt:secretkey"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var claims = new[] {
+                new Claim(ClaimTypes.Email,Email),
+                new Claim("Id",Id.ToString())
+            };
+            var token = new JwtSecurityToken(_Toolsettings["Jwt:Issuer"],
+              _Toolsettings["Jwt:Issuer"],
+              claims,
+              expires: DateTime.Now.AddMinutes(60),
+              signingCredentials: credentials);
+            return new JwtSecurityTokenHandler().WriteToken(token);
+
         }
     }
 }
