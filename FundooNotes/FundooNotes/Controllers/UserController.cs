@@ -52,7 +52,7 @@ namespace FundooNotes.Controllers
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Login UnSuccessfull" });
+                    return this.BadRequest(new { success = false, message = "Enter Valid Email or Password" });
                 }
             }
             catch (Exception)
