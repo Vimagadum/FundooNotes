@@ -55,11 +55,7 @@ namespace FundooNotes
                         Id = "Bearer"
                     }
                 };
-                c.AddSecurityDefinition("Bearer", securitySchema);
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    { securitySchema, new[] { "Bearer" } }
-                });
+                
             });
             
         }
