@@ -18,6 +18,7 @@ namespace RepositoryLayer.Service
     {
         private readonly FundooContext fundooContext;
         private readonly IConfiguration _Toolsettings;
+
         public UserRL(FundooContext fundooContext, IConfiguration _Toolsettings)
         {
             this.fundooContext = fundooContext;
@@ -79,6 +80,30 @@ namespace RepositoryLayer.Service
               signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
 
+        }
+
+        public string ForgetPassword(string email)
+        {
+            try
+            {
+                var user = fundooContext.User.Where(x => x.Email == email).FirstOrDefault();
+                if(user!=null)
+                {
+                    var token = GenerateSecurityToken(user.Email, user.Id);
+                    new MsmqModel().Sender(token);
+                    return token;
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
