@@ -2,6 +2,7 @@
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
+using RepositoryLayer.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,6 +74,72 @@ namespace RepositoryLayer.Service
                     // Save Changes Made in the database
                     this.fundooContext.SaveChanges();
                     return note;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public bool DeleteNote(long noteId)
+        {
+            try
+            {
+                // Fetch All the details with the given noteId.
+                var notes = this.fundooContext.Notes.Where(n => n.NotesId == noteId).FirstOrDefault();
+                if (notes != null)
+                {
+                    // Remove Note details from database
+                    this.fundooContext.Notes.Remove(notes);
+
+                    // Save Changes Made in the database
+                    this.fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        public List<NotesEntity> GetNotesByUserId(long userId)
+        {
+            try
+            {
+                var notesResult = this.fundooContext.Notes.Where(n => n.Id == userId).ToList();
+                if(notesResult!=null)
+                {
+                    return notesResult;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public List<NotesEntity> GetAllNotes()
+        {
+            try
+            {
+                // Fetch All the details from Notes Table
+                var allNotesResult = this.fundooContext.Notes.ToList();
+                if (allNotesResult != null)
+                {
+                    return allNotesResult;
                 }
                 else
                 {

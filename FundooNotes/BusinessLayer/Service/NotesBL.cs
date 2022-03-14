@@ -28,7 +28,6 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-
         public NotesEntity UpdateNote(NotesModel notesModel, long noteId)
         {
             try
@@ -41,5 +40,44 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+
+        public bool DeleteNote(long noteId)
+        {
+            try
+            {
+                return notesRL.DeleteNote(noteId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public List<NotesEntity> GetAllNotes()
+        {
+            try
+            {
+                return notesRL.GetAllNotes();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public List<NotesEntity> GetNotesByUserId(long userId)
+        {
+            try
+            {
+                return notesRL.GetNotesByUserId(userId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }      
     }
 }
