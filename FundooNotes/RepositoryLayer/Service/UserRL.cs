@@ -79,7 +79,6 @@ namespace RepositoryLayer.Service
               expires: DateTime.Now.AddMinutes(60),
               signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
-
         }
 
         public string ForgetPassword(string email)
@@ -97,6 +96,29 @@ namespace RepositoryLayer.Service
                 else
                 {
                     return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public bool ResetPassword(string email,string password,string confirmPassword)
+        {
+            try
+            {
+                if(password.Equals(confirmPassword))
+                {
+                    var user = fundooContext.User.Where(x => x.Email == email).FirstOrDefault();
+                    user.Password = confirmPassword;
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
             catch (Exception)

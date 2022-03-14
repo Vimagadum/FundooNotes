@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
@@ -79,6 +80,27 @@ namespace FundooNotes.Controllers
             catch (Exception)
             {
 
+                throw;
+            }
+        }
+        [HttpPut("ResetPassword")]
+        public IActionResult ResetPassword(string password,string confirmPassword)
+        {
+            try
+            {
+                var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                var result = userBL.ResetPassword(email, password,confirmPassword);
+                if (!result)
+                {
+                    return this.BadRequest(new { success = false, message = "Enter Valid Email" });
+                }
+                else
+                {                    
+                    return this.Ok(new { success = true, message = "Reset Password Successfully" });
+                }
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }
