@@ -130,5 +130,26 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        [Authorize]
+        [HttpGet("GetNotesByNotesId")]
+        public List<NotesEntity> GetNotesByNotesId(long noteId)
+        {
+            try
+            {
+                var result = this.notesBL.GetNotesByNotesId(noteId);
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -78,6 +78,19 @@ namespace BusinessLayer.Service
 
                 throw;
             }
-        }      
+        }
+
+        public List<NotesEntity> GetNotesByNotesId(long noteId)
+        {
+            try
+            {
+                return notesRL.GetNotesByNotesId(noteId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

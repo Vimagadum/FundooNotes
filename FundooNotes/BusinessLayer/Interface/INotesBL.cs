@@ -14,6 +14,7 @@ namespace BusinessLayer.Interface
         public List<NotesEntity> GetNotesByUserId(long useId);
 
         public List<NotesEntity> GetAllNotes();
+        public List<NotesEntity> GetNotesByNotesId(long noteId);
 
     }
 }

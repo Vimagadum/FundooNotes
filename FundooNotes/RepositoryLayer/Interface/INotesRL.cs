@@ -13,6 +13,8 @@ namespace RepositoryLayer.Interface
         public bool DeleteNote(long noteId);
         public List<NotesEntity> GetNotesByUserId(long useId);
         public List<NotesEntity> GetAllNotes();
+        public List<NotesEntity> GetNotesByNotesId(long noteId);
+
 
 
 

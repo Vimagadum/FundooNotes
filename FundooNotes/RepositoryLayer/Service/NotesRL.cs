@@ -151,5 +151,25 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+        public List<NotesEntity> GetNotesByNotesId(long noteId)
+        {
+            try
+            {
+                var notesResult = this.fundooContext.Notes.Where(n => n.NotesId == noteId).ToList();
+                if (notesResult != null)
+                {
+                    return notesResult;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
