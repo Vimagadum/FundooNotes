@@ -1,4 +1,5 @@
 ﻿using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Entity;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace BusinessLayer.Interface
         public NotesEntity IsArchieveOrNot(long noteId, long userId);
         public NotesEntity IsTrashOrNot(long noteId, long userId);
         public NotesEntity IsPinOrNot(long noteId, long userId);
+        public NotesEntity UploadImage(long noteId, long userId, IFormFile image);
 
     }
 }

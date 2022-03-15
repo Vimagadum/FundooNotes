@@ -219,5 +219,27 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        [HttpPost("ImageUpload")]
+        public IActionResult UploadImage(long noteId, IFormFile image)
+        {
+            try
+            {
+                // Take id of  Logged In User
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "Id").Value);
+                var result = this.notesBL.UploadImage(noteId, userId, image);
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = "Image Uploaded Successfully", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = "Image Upload Failed ! Try Again " });
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

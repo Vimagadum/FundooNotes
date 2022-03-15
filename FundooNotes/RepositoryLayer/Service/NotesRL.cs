@@ -1,4 +1,8 @@
-﻿using CommonLayer.Model;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
@@ -13,9 +17,11 @@ namespace RepositoryLayer.Service
     public class NotesRL:INotesRL
     {
         public readonly FundooContext fundooContext;
-        public NotesRL(FundooContext fundooContext)
+        private readonly IConfiguration configuration;
+        public NotesRL(FundooContext fundooContext, IConfiguration configuration)
         {
             this.fundooContext = fundooContext;
+            this.configuration = configuration;
         }
         public NotesEntity CreateNote(NotesModel notesModel, long UserId)
         {
@@ -251,6 +257,44 @@ namespace RepositoryLayer.Service
                         notes.IsPinn = false;
                         this.fundooContext.SaveChanges();
                         return notes;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public NotesEntity UploadImage(long noteId, long userId, IFormFile image)
+        {
+            try
+            {
+                // Fetch All the details with the given noteId and userId
+                var note = this.fundooContext.Notes.FirstOrDefault(n => n.NotesId == noteId && n.Id == userId);
+                if (note != null)
+                {
+                    Account acc = new Account(configuration["Cloudinary:CloudName"], configuration["Cloudinary:ApiKey"], configuration["Cloudinary:ApiSecret"]);
+                    Cloudinary cloud = new Cloudinary(acc);
+                    var imagePath = image.OpenReadStream();
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(image.FileName, imagePath),
+                    };
+                    var uploadResult = cloud.Upload(uploadParams);
+                    note.Image = image.FileName;
+                    this.fundooContext.Notes.Update(note);
+                    int upload = this.fundooContext.SaveChanges();
+                    if (upload > 0)
+                    {
+                        return note;
+                    }
+                    else
+                    {
+                        return null;
                     }
                 }
                 else

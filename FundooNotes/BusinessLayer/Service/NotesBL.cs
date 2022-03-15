@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 using System;
@@ -124,6 +125,19 @@ namespace BusinessLayer.Service
             try
             {
                 return notesRL.IsPinOrNot(noteId, userId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public NotesEntity UploadImage(long noteId, long userId, IFormFile image)
+        {
+            try
+            {
+                return notesRL.UploadImage(noteId, userId, image);
             }
             catch (Exception)
             {
