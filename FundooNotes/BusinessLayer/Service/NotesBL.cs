@@ -92,5 +92,44 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+
+        public NotesEntity IsArchieveOrNot(long noteId, long userId)
+        {
+            try
+            {
+                return notesRL.IsArchieveOrNot(noteId, userId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public NotesEntity IsTrashOrNot(long noteId, long userId)
+        {
+            try
+            {
+                return notesRL.IsTrashOrNot(noteId, userId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public NotesEntity IsPinOrNot(long noteId, long userId)
+        {
+            try
+            {
+                return notesRL.IsPinOrNot(noteId, userId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

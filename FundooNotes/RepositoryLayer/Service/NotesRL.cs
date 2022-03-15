@@ -89,14 +89,14 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                // Fetch All the details with the given noteId.
+                
                 var notes = this.fundooContext.Notes.Where(n => n.NotesId == noteId).FirstOrDefault();
                 if (notes != null)
                 {
                     // Remove Note details from database
                     this.fundooContext.Notes.Remove(notes);
 
-                    // Save Changes Made in the database
+                    
                     this.fundooContext.SaveChanges();
                     return true;
                 }
@@ -109,8 +109,7 @@ namespace RepositoryLayer.Service
             {
                 throw;
             }
-        }
-        
+        }        
         public List<NotesEntity> GetNotesByUserId(long userId)
         {
             try
@@ -168,6 +167,99 @@ namespace RepositoryLayer.Service
             catch (Exception)
             {
 
+                throw;
+            }
+        }
+        public NotesEntity IsArchieveOrNot(long noteId, long userId)
+        {
+            try
+            {
+                // Fetch All the details with the given noteId and userId
+                var notes = this.fundooContext.Notes.Where(n => n.NotesId == noteId && n.Id == userId).FirstOrDefault();
+                if (notes != null)
+                {
+                    if (notes.IsArchive == false)
+                    {
+                        notes.IsArchive = true;
+                        this.fundooContext.SaveChanges();
+                        return notes;
+                    }
+                    else
+                    {
+                        notes.IsArchive = false;
+                        this.fundooContext.SaveChanges();
+                        return notes;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public NotesEntity IsTrashOrNot(long noteId, long userId)
+        {
+            try
+            {
+                // Fetch All the details with the given noteId and userId
+                var notes = this.fundooContext.Notes.Where(n => n.NotesId == noteId && n.Id == userId).FirstOrDefault();
+                if (notes != null)
+                {
+                    if (notes.IsTrash == false)
+                    {
+                        notes.IsTrash = true;
+                        this.fundooContext.SaveChanges();
+                        return notes;
+                    }
+                    else
+                    {
+                        notes.IsTrash = false;
+                        this.fundooContext.SaveChanges();
+                        return notes;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public NotesEntity IsPinOrNot(long noteId, long userId)
+        {
+            try
+            {
+                // Fetch All the details with the given noteId and userId
+                var notes = this.fundooContext.Notes.Where(n => n.NotesId == noteId && n.Id == userId).FirstOrDefault();
+                if (notes != null)
+                {
+                    if (notes.IsPinn == false)
+                    {
+                        notes.IsPinn = true;
+                        this.fundooContext.SaveChanges();
+                        return notes;
+                    }
+                    else
+                    {
+                        notes.IsPinn = false;
+                        this.fundooContext.SaveChanges();
+                        return notes;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }

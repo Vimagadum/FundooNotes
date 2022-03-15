@@ -15,6 +15,10 @@ namespace RepositoryLayer.Interface
         public List<NotesEntity> GetAllNotes();
         public List<NotesEntity> GetNotesByNotesId(long noteId);
 
+        public NotesEntity IsArchieveOrNot(long noteId, long userId);
+        public NotesEntity IsTrashOrNot(long noteId, long userId);
+        public NotesEntity IsPinOrNot(long noteId, long userId);
+
 
 
 

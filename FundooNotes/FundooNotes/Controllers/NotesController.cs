@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NotesController : ControllerBase
@@ -23,7 +24,7 @@ namespace FundooNotes.Controllers
         {
             this.notesBL = notesBL;
         }
-        [Authorize]
+       
         [HttpPost("CreateNote")]
         public IActionResult CreateNote(NotesModel notesModel)
         {
@@ -46,7 +47,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        [Authorize]
+       
         [HttpPut("UpdateNote")]
         public IActionResult UpdateNote(NotesModel notesModel, long noteId)
         {
@@ -67,7 +68,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        [Authorize]
+       
         [HttpDelete("DeleteNote")]
         public IActionResult DeleteNote(long noteId)
         {
@@ -88,13 +89,13 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        [Authorize]
-        [HttpGet("GetNoteByUserId")]
-        public IActionResult GetNotesByUserId(long userId)
+       
+        [HttpGet("{Id}/Get")]
+        public IActionResult GetNotesByUserId(long Id)
         {
             try
             {
-                var notes = this.notesBL.GetNotesByUserId(userId);
+                var notes = this.notesBL.GetNotesByUserId(Id);
                 if (notes != null)
                 {
                     return this.Ok(new { Success = true, message = "Your Notes Are Displaying", data = notes });
@@ -109,7 +110,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        [Authorize]
+       
         [HttpGet("GetAllNotes")]
         public List<NotesEntity> GetAllNotes()
         {
@@ -130,7 +131,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        [Authorize]
+        
         [HttpGet("GetNotesByNotesId")]
         public List<NotesEntity> GetNotesByNotesId(long noteId)
         {
@@ -144,6 +145,73 @@ namespace FundooNotes.Controllers
                 else
                 {
                     return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        [HttpGet("Archive")]
+        public IActionResult IsArchiveOrNot(long noteId)
+        {
+            try
+            {
+                // Take id of  Logged User
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "Id").Value);
+                var result = this.notesBL.IsArchieveOrNot(noteId, userId);
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = "  Is Archive Successfull ", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = " Is Archive Unsuccessful" });
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpGet("Trash")]
+        public IActionResult IsTrashOrNot(long noteId)
+        {
+            try
+            {
+                // Take id of  Logged User
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "Id").Value);
+                var result = this.notesBL.IsTrashOrNot(noteId, userId);
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = "  Is Trash Successfull ", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = " Is Trash Unsuccessful" });
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpGet("Pin")]
+        public IActionResult IsPinOrNot(long noteId)
+        {
+            try
+            {
+                // Take id of  Logged User
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "Id").Value);
+                var result = this.notesBL.IsPinOrNot(noteId, userId);
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = "  Is Pin Successfull ", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = " Is Pin Unsuccessful" });
                 }
             }
             catch (Exception)
