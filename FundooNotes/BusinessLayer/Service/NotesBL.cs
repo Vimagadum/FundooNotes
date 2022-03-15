@@ -29,11 +29,11 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-        public NotesEntity UpdateNote(NotesModel notesModel, long noteId)
+        public NotesEntity UpdateNote(UpdateModel updateModel, long noteId, long userId)
         {
             try
             {
-                return notesRL.UpdateNote(notesModel, noteId);
+                return notesRL.UpdateNote(updateModel, noteId, userId);
             }
             catch (Exception)
             {
@@ -42,11 +42,11 @@ namespace BusinessLayer.Service
             }
         }
 
-        public bool DeleteNote(long noteId)
+        public bool DeleteNote(long noteId, long userId)
         {
             try
             {
-                return notesRL.DeleteNote(noteId);
+                return notesRL.DeleteNote(noteId,userId);
             }
             catch (Exception)
             {
@@ -55,18 +55,7 @@ namespace BusinessLayer.Service
             }
         }
 
-        public List<NotesEntity> GetAllNotes()
-        {
-            try
-            {
-                return notesRL.GetAllNotes();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
+        
 
         public List<NotesEntity> GetNotesByUserId(long userId)
         {
@@ -81,11 +70,11 @@ namespace BusinessLayer.Service
             }
         }
 
-        public List<NotesEntity> GetNotesByNotesId(long noteId)
+        public List<NotesEntity> GetNotesByNotesId(long noteId, long userId)
         {
             try
             {
-                return notesRL.GetNotesByNotesId(noteId);
+                return notesRL.GetNotesByNotesId(noteId,userId);
             }
             catch (Exception)
             {
@@ -145,5 +134,7 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+
+       
     }
 }

@@ -60,19 +60,19 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
-        public NotesEntity UpdateNote(NotesModel notesModel, long noteId)
+        public NotesEntity UpdateNote(UpdateModel updateModel, long noteId,long userId)
         {
             try
             {
                 // Fetch All the details with the given noteId.
-                var note = this.fundooContext.Notes.Where(u => u.NotesId == noteId).FirstOrDefault();
+                var note = this.fundooContext.Notes.Where(u => u.NotesId == noteId&&u.Id==userId).FirstOrDefault();
                 if (note != null)
                 {
-                    note.Title = notesModel.Title;
-                    note.Description = notesModel.Description;
-                    note.Colour = notesModel.Colour;
-                    note.Image = notesModel.Image;
-                    note.ModifierAt = notesModel.ModifierAt;
+                    note.Title = updateModel.Title;
+                    note.Description = updateModel.Description;
+                    note.Colour = updateModel.Colour;
+                    note.Image = updateModel.Image;
+                    note.ModifierAt = updateModel.ModifierAt;
 
                     // Update database for given NoteId.
                     this.fundooContext.Notes.Update(note);
@@ -91,12 +91,12 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
-        public bool DeleteNote(long noteId)
+        public bool DeleteNote(long noteId,long userId)
         {
             try
             {
                 
-                var notes = this.fundooContext.Notes.Where(n => n.NotesId == noteId).FirstOrDefault();
+                var notes = this.fundooContext.Notes.Where(n => n.NotesId == noteId&&n.Id==userId).FirstOrDefault();
                 if (notes != null)
                 {
                     // Remove Note details from database
@@ -136,31 +136,12 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
-        public List<NotesEntity> GetAllNotes()
+        
+        public List<NotesEntity> GetNotesByNotesId(long noteId,long userId)
         {
             try
             {
-                // Fetch All the details from Notes Table
-                var allNotesResult = this.fundooContext.Notes.ToList();
-                if (allNotesResult != null)
-                {
-                    return allNotesResult;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-        public List<NotesEntity> GetNotesByNotesId(long noteId)
-        {
-            try
-            {
-                var notesResult = this.fundooContext.Notes.Where(n => n.NotesId == noteId).ToList();
+                var notesResult = this.fundooContext.Notes.Where(n => n.NotesId == noteId&&n.Id==userId).ToList();
                 if (notesResult != null)
                 {
                     return notesResult;
@@ -306,6 +287,26 @@ namespace RepositoryLayer.Service
             {
                 throw;
             }
+        }
+
+        public NotesEntity UpdateNote(NotesModel notesModel, long noteId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public NotesEntity UpdateNote(UpdateModel updateModel, long noteId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteNote(long noteId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<NotesEntity> GetNotesByNotesId(long noteId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

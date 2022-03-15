@@ -10,11 +10,10 @@ namespace RepositoryLayer.Interface
     public interface INotesRL
     {
         public NotesEntity CreateNote(NotesModel notesModel, long UserId);
-        public NotesEntity UpdateNote(NotesModel notesModel, long noteId);
-        public bool DeleteNote(long noteId);
+        public NotesEntity UpdateNote(UpdateModel updateModel, long noteId, long userId);
+        public bool DeleteNote(long noteId, long userId);
         public List<NotesEntity> GetNotesByUserId(long useId);
-        public List<NotesEntity> GetAllNotes();
-        public List<NotesEntity> GetNotesByNotesId(long noteId);
+        public List<NotesEntity> GetNotesByNotesId(long noteId, long userId);
 
         public NotesEntity IsArchieveOrNot(long noteId, long userId);
         public NotesEntity IsTrashOrNot(long noteId, long userId);
