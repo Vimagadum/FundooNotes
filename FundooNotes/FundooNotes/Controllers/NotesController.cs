@@ -25,7 +25,7 @@ namespace FundooNotes.Controllers
             this.notesBL = notesBL;
         }
        
-        [HttpPost("CreateNote")]
+        [HttpPost("Create")]
         public IActionResult CreateNote(NotesModel notesModel)
         {
             try
@@ -48,7 +48,7 @@ namespace FundooNotes.Controllers
             }
         }
        
-        [HttpPut("UpdateNote")]
+        [HttpPut("Update")]
         public IActionResult UpdateNote(UpdateModel updateModel, long noteId)
         {
             try
@@ -70,7 +70,7 @@ namespace FundooNotes.Controllers
             }
         }
        
-        [HttpDelete("DeleteNote")]
+        [HttpDelete("Delete")]
         public IActionResult DeleteNote(long noteId)
         {
             try
@@ -122,7 +122,7 @@ namespace FundooNotes.Controllers
             }
         }
    
-        [HttpGet("GetNotesByNotesId")]
+        [HttpGet("{noteId}/GetNote")]
         public IActionResult GetNotesByNotesId(long noteId)
         {
             try
@@ -144,7 +144,7 @@ namespace FundooNotes.Controllers
             }
         }
         
-        [HttpGet("Archive")]
+        [HttpGet("IsArchive")]
         public IActionResult IsArchiveOrNot(long noteId)
         {
             try
@@ -166,7 +166,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        [HttpGet("Trash")]
+        [HttpGet("IsTrash")]
         public IActionResult IsTrashOrNot(long noteId)
         {
             try
@@ -188,7 +188,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        [HttpGet("Pin")]
+        [HttpGet("IsPin")]
         public IActionResult IsPinOrNot(long noteId)
         {
             try
@@ -224,7 +224,28 @@ namespace FundooNotes.Controllers
                 }
                 else
                 {
-                    return this.BadRequest(new { Success = false, message = "Image Upload Failed ! Try Again " });
+                    return this.BadRequest(new { Success = false, message = "Image Upload Failed" });
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpPut("colour")]
+        public IActionResult UpdateColour(long noteId,string colour)
+        {
+            try
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "Id").Value);
+                var notes = this.notesBL.Docolour(noteId, userId, colour);
+                if (notes != null)
+                {
+                    return this.Ok(new { Success = true, message = " colour Added successfully ", data = notes });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = "failed to add colour" });
                 }
             }
             catch (Exception)

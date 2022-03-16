@@ -135,6 +135,17 @@ namespace BusinessLayer.Service
             }
         }
 
-       
+        public NotesEntity Docolour(long noteId, long userId, string colour)
+        {
+            try
+            {
+                return notesRL.Docolour(noteId, userId, colour);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

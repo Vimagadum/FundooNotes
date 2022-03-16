@@ -16,7 +16,7 @@ namespace RepositoryLayer.Service
 {
     public class NotesRL:INotesRL
     {
-        public readonly FundooContext fundooContext;
+        private readonly FundooContext fundooContext;
         private readonly IConfiguration configuration;
         public NotesRL(FundooContext fundooContext, IConfiguration configuration)
         {
@@ -70,7 +70,7 @@ namespace RepositoryLayer.Service
                 {
                     note.Title = updateModel.Title;
                     note.Description = updateModel.Description;
-                    note.Colour = updateModel.Colour;
+                    
                     note.Image = updateModel.Image;
                     note.ModifierAt = updateModel.ModifierAt;
 
@@ -254,7 +254,7 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                // Fetch All the details with the given noteId and userId
+                
                 var note = this.fundooContext.Notes.FirstOrDefault(n => n.NotesId == noteId && n.Id == userId);
                 if (note != null)
                 {
@@ -288,25 +288,28 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
-
-        public NotesEntity UpdateNote(NotesModel notesModel, long noteId)
+        public NotesEntity Docolour(long noteId,long userId,string colour)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var notes = this.fundooContext.Notes.FirstOrDefault(a => a.NotesId == noteId&&a.Id==userId);
+                if(notes!=null)
+                {
+                    notes.Colour = colour;
+                    this.fundooContext.SaveChanges();
+                    return notes;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-        public NotesEntity UpdateNote(UpdateModel updateModel, long noteId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool DeleteNote(long noteId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<NotesEntity> GetNotesByNotesId(long noteId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
