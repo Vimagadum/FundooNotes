@@ -92,7 +92,7 @@ namespace FundooNotes.Controllers
             }
         }
        
-        [HttpGet("{Id}/GetNotes")]
+        [HttpGet("{Id}/GetNote")]
         public IActionResult GetNotesByUserId(long Id)
         {
             try
