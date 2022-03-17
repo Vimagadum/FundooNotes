@@ -43,18 +43,58 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
-        public LabelEntity UpdateLabel(string labeName,long noteId,long userId)
+        
+        public bool RemoveLabel(long labelId, long userId)
         {
             try
             {
-                var label = this.fundooContext.Label.FirstOrDefault(a => a.NotesId == noteId && a.Id == userId);
-                if(label!=null)
+                var labelDetails = this.fundooContext.Label.FirstOrDefault(l => l.LabelId == labelId && l.Id == userId);
+                if (labelDetails != null)
                 {
-                    label.LabelName = labeName;
-                    this.fundooContext.Label.Update(label);
-                    this.fundooContext.SaveChanges();
-                    return label;
+                    this.fundooContext.Label.Remove(labelDetails);
 
+                    // Save Changes Made in the database
+                    this.fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public IEnumerable<LabelEntity> UpdateLabel(long userID, string oldLabelName, string labelName)
+        {
+            IEnumerable<LabelEntity> labels;
+            labels = fundooContext.Label.Where(e => e.Id == userID && e.LabelName == oldLabelName).ToList();
+            if (labels != null)
+            {
+                foreach (var label in labels)
+                {
+                    label.LabelName = labelName;
+                }
+                fundooContext.SaveChanges();
+                return labels;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+        public List<LabelEntity> GetByLabeId(long noteId)
+        {
+            try
+            {
+                // Fetch All the details with the given noteid.
+                var data = this.fundooContext.Label.Where(d => d.NotesId == noteId).ToList();
+                if (data != null)
+                {
+                    return data;
                 }
                 else
                 {
@@ -63,9 +103,10 @@ namespace RepositoryLayer.Service
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
+        
     }
 }

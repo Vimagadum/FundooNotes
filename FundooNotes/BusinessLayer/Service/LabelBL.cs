@@ -27,11 +27,37 @@ namespace BusinessLayer.Service
             }
         }
 
-        public LabelEntity UpdateLabel(string labeName, long noteId, long userId)
+        public List<LabelEntity> GetByLabeId(long noteId)
         {
             try
             {
-                return this.labelRL.UpdateLabel(labeName, noteId, userId);
+                return this.labelRL.GetByLabeId(noteId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public bool RemoveLabel(long labelId, long userId)
+        {
+            try
+            {
+                return this.labelRL.RemoveLabel(labelId, userId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public IEnumerable<LabelEntity> UpdateLabel(long userID, string oldLabelName, string labelName)
+        {
+            try
+            {
+                return this.labelRL.UpdateLabel(userID, oldLabelName, labelName);
             }
             catch (Exception)
             {
