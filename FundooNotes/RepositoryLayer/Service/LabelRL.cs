@@ -106,7 +106,26 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+        public IEnumerable<LabelEntity> GetAllLabels()
+        {
+            try
+            {
+                // Fetch All the details from Labels Table
+                var labels = this.fundooContext.Label.ToList();
+                if (labels != null)
+                {
+                    return labels;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-        
     }
 }

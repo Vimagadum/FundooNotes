@@ -27,6 +27,19 @@ namespace BusinessLayer.Service
             }
         }
 
+        public IEnumerable<LabelEntity> GetAllLabels()
+        {
+            try
+            {
+                return this.labelRL.GetAllLabels();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public List<LabelEntity> GetByLabeId(long noteId)
         {
             try

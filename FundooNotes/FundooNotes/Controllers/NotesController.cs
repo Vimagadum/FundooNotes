@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RepositoryLayer.Entity;
 using System;
@@ -20,9 +21,13 @@ namespace FundooNotes.Controllers
     public class NotesController : ControllerBase
     {
         public readonly INotesBL notesBL;
-        public NotesController(INotesBL notesBL)
+        private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
+        public NotesController(INotesBL notesBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.notesBL = notesBL;
+            this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
         }
        
         [HttpPost("Create")]
@@ -121,7 +126,33 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-   
+        [Authorize]
+        [HttpGet("redis")]
+        public async Task<IActionResult> GetAllNotessUsingRedisCache()
+        {
+            var cacheKey = "NotesList";
+            string serializedNotesList;
+            var NotesList = new List<NotesEntity>();
+            var redisNotesList = await distributedCache.GetAsync(cacheKey);
+            if (redisNotesList != null)
+            {
+                serializedNotesList = Encoding.UTF8.GetString(redisNotesList);
+                NotesList = JsonConvert.DeserializeObject<List<NotesEntity>>(serializedNotesList);
+            }
+            else
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "Id").Value);
+                NotesList = (List<NotesEntity>) this.notesBL.GetNotesByUserId(userId);
+                serializedNotesList = JsonConvert.SerializeObject(NotesList);
+                redisNotesList = Encoding.UTF8.GetBytes(serializedNotesList);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                await distributedCache.SetAsync(cacheKey, redisNotesList, options);
+            }
+            return Ok(NotesList);
+        }
+
         [HttpGet("{noteId}/GetNote")]
         public IActionResult GetNotesByNotesId(long noteId)
         {

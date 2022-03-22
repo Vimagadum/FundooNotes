@@ -87,5 +87,24 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+        public List<CollabEntity> GetAllCollab()
+        {
+            try
+            {
+                var data = this.fundooContext.Collab.ToList();
+                if (data != null)
+                {
+                    return data;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
