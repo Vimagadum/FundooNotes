@@ -33,7 +33,7 @@ namespace RepositoryLayer.Service
                 userEntity.FirstName = User.FirstName;
                 userEntity.LastName = User.LastName;
                 userEntity.Email = User.Email;
-                userEntity.Password = User.Password;
+                userEntity.Password = this.PasswordEncrypt(User.Password);
                 fundooContext.Add(userEntity);
                 int result = fundooContext.SaveChanges();
                 if(result>0)
@@ -55,9 +55,21 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                var user = fundooContext.User.Where(x => x.Email == userLogin.Email && x.Password == userLogin.Password).FirstOrDefault();
-                string token = GenerateSecurityToken(user.Email, user.Id);
-                return token;
+                if (string.IsNullOrEmpty(userLogin.Email) || string.IsNullOrEmpty(userLogin.Password))
+                {
+                    return null;
+                }
+                var result = fundooContext.User.Where(x => x.Email == userLogin.Email).FirstOrDefault();
+                string dcryptPass = this.PasswordDecrypt(result.Password);
+                if (result != null && dcryptPass == userLogin.Password)
+                {
+                    string token = GenerateSecurityToken(result.Email, result.Id);
+                    return token;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -112,7 +124,7 @@ namespace RepositoryLayer.Service
                 if(password.Equals(confirmPassword))
                 {
                     var user = fundooContext.User.Where(x => x.Email == email).FirstOrDefault();
-                    user.Password = confirmPassword;
+                    user.Password = this.PasswordEncrypt(confirmPassword);
                     fundooContext.SaveChanges();
                     return true;
                 }
@@ -124,6 +136,39 @@ namespace RepositoryLayer.Service
             catch (Exception)
             {
 
+                throw;
+            }
+        }
+        public string PasswordEncrypt(string password)
+        {
+            try
+            {
+                byte[] encode = new byte[password.Length];
+                encode = Encoding.UTF8.GetBytes(password);
+                string encryptPass = Convert.ToBase64String(encode);
+                return encryptPass;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public string PasswordDecrypt(string encodedPass)
+        {
+            try
+            {
+                UTF8Encoding encoder = new UTF8Encoding();
+                Decoder utf8Decode = encoder.GetDecoder();
+                byte[] toDecodeByte = Convert.FromBase64String(encodedPass);
+                int charCount = utf8Decode.GetCharCount(toDecodeByte, 0, toDecodeByte.Length);
+                char[] decodedChar = new char[charCount];
+                utf8Decode.GetChars(toDecodeByte, 0, toDecodeByte.Length, decodedChar, 0);
+                string PassDecrypt = new string(decodedChar);
+                return PassDecrypt;
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }
