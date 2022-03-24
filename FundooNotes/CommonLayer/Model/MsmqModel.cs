@@ -1,16 +1,22 @@
-﻿using Experimental.System.Messaging;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
-
-namespace CommonLayer.Model
+﻿namespace CommonLayer.Model
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Net;
+    using System.Net.Mail;
+    using System.Text;    
+    using Experimental.System.Messaging;
+    
+    /// <summary>
+    /// MSMQ Model
+    /// </summary>
     public class MsmqModel
     {
+        /// <summary>The message queue</summary>
         MessageQueue messageQueue = new MessageQueue();
 
+        /// <summary>Senders the specified token.</summary>
+        /// <param name="token">The token.</param>
         public void Sender(string token)
         {
             this.messageQueue.Path = @".\private$\Tokens";
@@ -28,11 +34,13 @@ namespace CommonLayer.Model
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
 
+        /// <summary>Handles the ReceiveCompleted event of the MessageQueue control.</summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ReceiveCompletedEventArgs" /> instance containing the event data.</param>
         private void MessageQueue_ReceiveCompleted(object sender, ReceiveCompletedEventArgs e)
         {
             var message = this.messageQueue.EndReceive(e.AsyncResult);
@@ -54,10 +62,8 @@ namespace CommonLayer.Model
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
-    }
-   
+    }   
 }

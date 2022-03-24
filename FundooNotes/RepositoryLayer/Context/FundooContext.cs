@@ -1,22 +1,56 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RepositoryLayer.Entity;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RepositoryLayer.Context
+﻿namespace RepositoryLayer.Context
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using Microsoft.EntityFrameworkCore;
+    using RepositoryLayer.Entity;
+
+    /// <summary>
+    /// Fundo Context
+    /// </summary>
+    /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
     public class FundooContext : DbContext 
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FundooContext"/> class.
+        /// </summary>
+        /// <param name="options">The options for this context.</param>
         public FundooContext(DbContextOptions options)
             : base(options)
         {
         }
-        public DbSet<UserEntity> User { get; set; } 
+
+        /// <summary>
+        /// Gets or sets the user.
+        /// </summary>
+        /// <value>
+        /// The user.
+        /// </value>
+        public DbSet<UserEntity> User { get; set; }
+
+        /// <summary>
+        /// Gets or sets the notes.
+        /// </summary>
+        /// <value>
+        /// The notes.
+        /// </value>
         public DbSet<NotesEntity> Notes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the COLLAB.
+        /// </summary>
+        /// <value>
+        /// The COLLAB.
+        /// </value>
         public DbSet<CollabEntity> Collab { get; set; }
+
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
+        /// <value>
+        /// The label.
+        /// </value>
         public DbSet<LabelEntity> Label { get; set; }
-
-
     }
 }

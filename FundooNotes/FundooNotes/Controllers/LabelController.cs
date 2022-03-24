@@ -1,38 +1,59 @@
-﻿using BusinessLayer.Interface;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
-using RepositoryLayer.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FundooNotes.Controllers
+﻿namespace FundooNotes.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using BusinessLayer.Interface;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Caching.Distributed;
+    using Microsoft.Extensions.Caching.Memory;
+    using Newtonsoft.Json;
+    using RepositoryLayer.Entity;
+
+    /// <summary>
+    ///  Label Controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class LabelController : ControllerBase
     {
+        /// <summary>The label BL</summary>
         private readonly ILabelBL labelBL;
+
+        /// <summary>The memory cache</summary>
         private readonly IMemoryCache memoryCache;
+
+        /// <summary>The distributed cache</summary>
         private readonly IDistributedCache distributedCache;
+
+        /// <summary>Initializes a new instance of the <see cref="LabelController" /> class.</summary>
+        /// <param name="labelBL">The label BL.</param>
+        /// <param name="memoryCache">The memory cache.</param>
+        /// <param name="distributedCache">The distributed cache.</param>
         public LabelController(ILabelBL labelBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.labelBL = labelBL;
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
+
+        /// <summary>Adds the label.</summary>
+        /// <param name="labelName">Name of the label.</param>
+        /// <param name="noteId">The note identifier.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         [Authorize]
         [HttpPost("Add")]
-        public IActionResult AddLabel(string labelName,long noteId)
+        public IActionResult AddLabel(string labelName, long noteId)
         {
             try
             {
+
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "Id").Value);
                 var label = this.labelBL.AddLabelName(labelName, noteId, userId);
                 if(label!=null)
@@ -51,6 +72,12 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        /// <summary>Renames the label.</summary>
+        /// <param name="lableName">Name of the lable.</param>
+        /// <param name="newLabelName">New name of the label.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         [Authorize]
         [HttpPut("Update")]
         public IActionResult RenameLabel(string lableName, string newLabelName)
@@ -73,8 +100,13 @@ namespace FundooNotes.Controllers
 
                 throw;
             }
-
         }
+
+        /// <summary>Removes the label.</summary>
+        /// <param name="labelId">The label identifier.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         [Authorize]
         [HttpDelete("Remove")]
         public IActionResult RemoveLabel(long labelId)
@@ -97,20 +129,26 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+
+        /// <summary>Gets the by label identifier.</summary>
+        /// <param name="noteId">The note identifier.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         [Authorize]
         [HttpGet("{noteId}/Get")]
-        public List<LabelEntity> GetByLabelId(long noteId)
+        public IActionResult GetByLabelId(long noteId)
         {
             try
             {
                 var result = this.labelBL.GetByLabeId(noteId);
                 if(result!=null)
                 {
-                    return result;
+                    return this.Ok(new { success = true, message = "Displaying successfully", response = result });
                 }
                 else
                 {
-                    return null;
+                    return this.BadRequest(new { success = false, message = "UnSuccessfull" });
                 }
             }
             catch (Exception)
@@ -118,6 +156,11 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+
+        /// <summary>Gets all labels.</summary>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         [HttpGet("GetAll")]
         public IEnumerable<LabelEntity> GetAllLabels()
         {
@@ -138,6 +181,11 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+
+        /// <summary>Gets all label using redis cache.</summary>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         [Authorize]
         [HttpGet("redis")]
         public async Task<IActionResult> GetAllLabelUsingRedisCache()
@@ -163,6 +211,5 @@ namespace FundooNotes.Controllers
             }
             return Ok(LabelList);
         }
-
     }
 }

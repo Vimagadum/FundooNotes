@@ -1,21 +1,42 @@
-﻿using RepositoryLayer.Context;
-using RepositoryLayer.Entity;
-using RepositoryLayer.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace RepositoryLayer.Service
+﻿namespace RepositoryLayer.Service
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using RepositoryLayer.Context;
+    using RepositoryLayer.Entity;
+    using RepositoryLayer.Interface;
+
+    /// <summary>
+    /// LABEL RL Class
+    /// </summary>
+    /// <seealso cref="RepositoryLayer.Interface.ILabelRL" />
     public class LabelRL : ILabelRL
     {
+        /// <summary>
+        /// The FUNDOO context
+        /// </summary>
         private readonly FundooContext fundooContext;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LabelRL"/> class.
+        /// </summary>
+        /// <param name="fundooContext">The FUNDOO context.</param>
         public LabelRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
         }
+
+        /// <summary>
+        /// Adds the name of the label.
+        /// </summary>
+        /// <param name="labelName">Name of the label.</param>
+        /// <param name="noteId">The note identifier.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>
+        /// Add Label Name
+        /// </returns>
         public LabelEntity AddLabelName(string labelName, long noteId, long userId)
         {
             try
@@ -39,11 +60,18 @@ namespace RepositoryLayer.Service
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
-        
+
+        /// <summary>
+        /// Removes the label.
+        /// </summary>
+        /// <param name="labelId">The label identifier.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>
+        /// Remove Label
+        /// </returns>
         public bool RemoveLabel(long labelId, long userId)
         {
             try
@@ -67,25 +95,42 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        /// <summary>
+        /// Updates the label.
+        /// </summary>
+        /// <param name="userID">The user identifier.</param>
+        /// <param name="oldLabelName">Old name of the label.</param>
+        /// <param name="labelName">Name of the label.</param>
+        /// <returns>
+        /// Update Label
+        /// </returns>
         public IEnumerable<LabelEntity> UpdateLabel(long userID, string oldLabelName, string labelName)
         {
             IEnumerable<LabelEntity> labels;
-            labels = fundooContext.Label.Where(e => e.Id == userID && e.LabelName == oldLabelName).ToList();
+            labels = this.fundooContext.Label.Where(e => e.Id == userID && e.LabelName == oldLabelName).ToList();
             if (labels != null)
             {
                 foreach (var label in labels)
                 {
                     label.LabelName = labelName;
                 }
-                fundooContext.SaveChanges();
+                this.fundooContext.SaveChanges();
                 return labels;
             }
             else
             {
                 return null;
             }
-
         }
+
+        /// <summary>
+        /// Gets the by labe identifier.
+        /// </summary>
+        /// <param name="noteId">The note identifier.</param>
+        /// <returns>
+        /// Get By LabeId
+        /// </returns>
         public List<LabelEntity> GetByLabeId(long noteId)
         {
             try
@@ -106,6 +151,13 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        /// <summary>
+        /// Gets all labels.
+        /// </summary>
+        /// <returns>
+        /// Get All Labels
+        /// </returns>
         public IEnumerable<LabelEntity> GetAllLabels()
         {
             try
@@ -126,6 +178,5 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
-
     }
 }

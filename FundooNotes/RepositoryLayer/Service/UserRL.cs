@@ -1,30 +1,53 @@
-﻿using CommonLayer.Model;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using RepositoryLayer.Context;
-using RepositoryLayer.Entity;
-using RepositoryLayer.Interface;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-
-namespace RepositoryLayer.Service
+﻿namespace RepositoryLayer.Service
 {
-    public class UserRL:IUserRL
-    {
-        private readonly FundooContext fundooContext;
-        private readonly IConfiguration _Toolsettings;
+    using System;
+    using System.Collections.Generic;
+    using System.IdentityModel.Tokens;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Text;
+    using CommonLayer.Model;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.IdentityModel.Tokens;
+    using RepositoryLayer.Context;
+    using RepositoryLayer.Entity;
+    using RepositoryLayer.Interface;
 
-        public UserRL(FundooContext fundooContext, IConfiguration _Toolsettings)
+    /// <summary>
+    /// USER RL Class
+    /// </summary>
+    /// <seealso cref="RepositoryLayer.Interface.IUserRL" />
+    public class UserRL : IUserRL
+    {
+        /// <summary>
+        /// The FUNDOO context
+        /// </summary>
+        private readonly FundooContext fundooContext;
+
+        /// <summary>
+        /// The TOOL SETTINGS
+        /// </summary>
+        private readonly IConfiguration toolsettings;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserRL"/> class.
+        /// </summary>
+        /// <param name="fundooContext">The FUNDOO context.</param>
+        /// <param name="toolsettings">The TOOL SETTINGS.</param>
+        public UserRL(FundooContext fundooContext, IConfiguration toolsettings)
         {
             this.fundooContext = fundooContext;
-            this._Toolsettings = _Toolsettings;
-
+            this.toolsettings = toolsettings;
         }
+
+        /// <summary>
+        /// Registrations the specified user.
+        /// </summary>
+        /// <param name="User">The user.</param>
+        /// <returns>
+        /// user Registration
+        /// </returns>
         public UserEntity Registration(UserRegistration User)
         {
             try
@@ -34,9 +57,9 @@ namespace RepositoryLayer.Service
                 userEntity.LastName = User.LastName;
                 userEntity.Email = User.Email;
                 userEntity.Password = this.PasswordEncrypt(User.Password);
-                fundooContext.Add(userEntity);
-                int result = fundooContext.SaveChanges();
-                if(result>0)
+                this.fundooContext.Add(userEntity);
+                int result = this.fundooContext.SaveChanges();
+                if (result > 0)
                 {
                     return userEntity;
                 }
@@ -47,10 +70,17 @@ namespace RepositoryLayer.Service
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
+        /// <summary>
+        /// Logins the specified user login.
+        /// </summary>
+        /// <param name="userLogin">The user login.</param>
+        /// <returns>
+        /// user login
+        /// </returns>
         public string login(UserLogin userLogin)
         {
             try
@@ -59,11 +89,11 @@ namespace RepositoryLayer.Service
                 {
                     return null;
                 }
-                var result = fundooContext.User.Where(x => x.Email == userLogin.Email).FirstOrDefault();
+                var result = this.fundooContext.User.Where(x => x.Email == userLogin.Email).FirstOrDefault();
                 string dcryptPass = this.PasswordDecrypt(result.Password);
                 if (result != null && dcryptPass == userLogin.Password)
                 {
-                    string token = GenerateSecurityToken(result.Email, result.Id);
+                    string token = this.GenerateSecurityToken(result.Email, result.Id);
                     return token;
                 }
                 else
@@ -73,37 +103,50 @@ namespace RepositoryLayer.Service
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
+        /// <summary>
+        /// Generates the security token.
+        /// </summary>
+        /// <param name="Email">The email.</param>
+        /// <param name="Id">The identifier.</param>
+        /// <returns>Generate Security Token</returns>
         private string GenerateSecurityToken(string Email, long Id)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Toolsettings["Jwt:secretkey"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.toolsettings["Jwt:secretkey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var claims = new[] {
-                new Claim(ClaimTypes.Email,Email),
-                new Claim("Id",Id.ToString())
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Email, Email),
+                new Claim("Id", Id.ToString())
             };
-            var token = new JwtSecurityToken(_Toolsettings["Jwt:Issuer"],
-              _Toolsettings["Jwt:Issuer"],
+            var token = new JwtSecurityToken(toolsettings["Jwt:Issuer"],
+              this.toolsettings["Jwt:Issuer"],
               claims,
               expires: DateTime.Now.AddMinutes(60),
               signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        /// <summary>
+        /// Forgets the password.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <returns>
+        /// Forget Password
+        /// </returns>
         public string ForgetPassword(string email)
         {
             try
             {
-                var user = fundooContext.User.Where(x => x.Email == email).FirstOrDefault();
-                if(user!=null)
+                var user = this.fundooContext.User.Where(x => x.Email == email).FirstOrDefault();
+                if(user != null)
                 {
-                    var token = GenerateSecurityToken(user.Email, user.Id);
+                    var token = this.GenerateSecurityToken(user.Email, user.Id);
                     new MsmqModel().Sender(token);
                     return token;
-
                 }
                 else
                 {
@@ -112,20 +155,28 @@ namespace RepositoryLayer.Service
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
 
-        public bool ResetPassword(string email,string password,string confirmPassword)
+        /// <summary>
+        /// Resets the password.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="confirmPassword">The confirm password.</param>
+        /// <returns>
+        /// Reset Password
+        /// </returns>
+        public bool ResetPassword(string email, string password, string confirmPassword)
         {
             try
             {
-                if(password.Equals(confirmPassword))
+                if (password.Equals(confirmPassword))
                 {
-                    var user = fundooContext.User.Where(x => x.Email == email).FirstOrDefault();
+                    var user = this.fundooContext.User.Where(x => x.Email == email).FirstOrDefault();
                     user.Password = this.PasswordEncrypt(confirmPassword);
-                    fundooContext.SaveChanges();
+                    this.fundooContext.SaveChanges();
                     return true;
                 }
                 else
@@ -135,10 +186,15 @@ namespace RepositoryLayer.Service
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
+        /// <summary>
+        /// Passwords the encrypt.
+        /// </summary>
+        /// <param name="password">The password.</param>
+        /// <returns>Password Encrypt</returns>
         public string PasswordEncrypt(string password)
         {
             try
@@ -154,6 +210,11 @@ namespace RepositoryLayer.Service
             }
         }
 
+        /// <summary>
+        /// Passwords the decrypt.
+        /// </summary>
+        /// <param name="encodedPass">The encoded pass.</param>
+        /// <returns>Password Decrypt</returns>
         public string PasswordDecrypt(string encodedPass)
         {
             try
