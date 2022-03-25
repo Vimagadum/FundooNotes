@@ -80,12 +80,12 @@
         /// </returns>
         [Authorize]
         [HttpPut("Update")]
-        public IActionResult RenameLabel(string lableName, string newLabelName)
+        public IActionResult RenameLabel(long noteId, string lableName, string newLabelName)
         {
             try
             {
                 long userID = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "Id").Value);
-                var result = labelBL.UpdateLabel(userID, lableName, newLabelName);
+                var result = labelBL.UpdateLabel(userID, lableName, newLabelName, noteId);
                 if (result != null)
                 {
                     return this.Ok(new { success = true, message = "Label renamed successfully", Response = result });

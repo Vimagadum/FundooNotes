@@ -52,25 +52,33 @@
         {
             try
             {
-                UserEntity userEntity = new UserEntity();
-                userEntity.FirstName = User.FirstName;
-                userEntity.LastName = User.LastName;
-                userEntity.Email = User.Email;
-                userEntity.Password = this.PasswordEncrypt(User.Password);
-                this.fundooContext.Add(userEntity);
-                int result = this.fundooContext.SaveChanges();
-                if (result > 0)
+                var userresult = this.fundooContext.User.FirstOrDefault(u => u.Email == User.Email);
+                if (userresult == null)
                 {
-                    return userEntity;
+                    UserEntity userEntity = new UserEntity();
+                    userEntity.FirstName = User.FirstName;
+                    userEntity.LastName = User.LastName;
+                    userEntity.Email = User.Email;
+                    userEntity.Password = this.PasswordEncrypt(User.Password);
+                    this.fundooContext.Add(userEntity);
+                    int result = this.fundooContext.SaveChanges();
+                    if (result > 0)
+                    {
+                        return userEntity;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -101,9 +109,9 @@
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -153,9 +161,9 @@
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -184,9 +192,9 @@
                     return false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

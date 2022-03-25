@@ -9,6 +9,7 @@
     using CommonLayer.Model;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using RepositoryLayer.Entity;
 
     /// <summary>
     /// USER CONTROLLER
@@ -45,16 +46,16 @@
                 var result = this.userBL.Registration(user);
                 if (result != null)
                 {
-                    return this.Ok(new { success = true, message = "Registration Successfull", data = result });
+                    return this.Ok(new ExceptionModel<UserEntity> { Status = true, Message = "Registration Successfull", Data = result });
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Registration UnSuccessfull" });
+                    return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Registration UnSuccessfull" });
                 }
             }
             catch (Exception)
             {
-                throw;
+                return this.NotFound(new ExceptionModel<string> { Status = false, Message = "Registration UnSuccessfull" });
             }
         }
 
@@ -71,16 +72,17 @@
                 var result = this.userBL.login(userLogin);
                 if (result != null)
                 {
-                    return this.Ok(new { success = true, message = "Login Successfull", data = result });
+                    return this.Ok(new ExceptionModel<string> { Status = true, Message = "Login Successfull", Data=result});
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Enter Valid Email or Password" });
+                    return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Enter valid email or password" });
                 }
             }
             catch (Exception)
             {
-                throw;
+                return this.NotFound(new ExceptionModel<string> { Status = false, Message = "Enter valid email or password" });
+
             }
         }
 
@@ -97,16 +99,16 @@
                 var result = this.userBL.ForgetPassword(email);
                 if (result != null)
                 {
-                    return this.Ok(new { success = true, message = "Mail Set Successfull" });
+                    return this.Ok(new ExceptionModel<string> { Status = true, Message = "mail sent Successfull"});
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Enter Valid Email" });
+                    return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Enter valid email or password" });
                 }
             }
             catch (Exception)
             {
-                throw;
+                return this.NotFound(new ExceptionModel<string> { Status = false, Message = "Enter valid email or password" });
             }
         }
 
@@ -125,16 +127,16 @@
                 var result = this.userBL.ResetPassword(email, password, confirmPassword);
                 if (!result)
                 {
-                    return this.BadRequest(new { success = false, message = "Enter Valid Email" });
+                    return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Enter valid password" });
                 }
                 else
-                {                    
-                    return this.Ok(new { success = true, message = "Reset Password Successfully" });
+                {
+                    return this.Ok(new ExceptionModel<string> { Status = true, Message = "Reset Password Successfull" });
                 }
             }
             catch (Exception)
             {
-                throw;
+                return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Enter valid password" });
             }
         }
     }

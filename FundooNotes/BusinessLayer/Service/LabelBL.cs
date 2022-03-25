@@ -116,11 +116,11 @@ namespace BusinessLayer.Service
         /// <returns>
         /// Update LABEL
         /// </returns>
-        public IEnumerable<LabelEntity> UpdateLabel(long userID, string oldLabelName, string labelName)
+        public IEnumerable<LabelEntity> UpdateLabel(long userID, string oldLabelName, string labelName, long noteId)
         {
             try
             {
-                return this.labelRL.UpdateLabel(userID, oldLabelName, labelName);
+                return this.labelRL.UpdateLabel(userID, oldLabelName, labelName, noteId);
             }
             catch (Exception)
             {

@@ -29,7 +29,7 @@ namespace BusinessLayer.Interface
         /// <returns>
         ///  Update Label
         /// </returns>
-        public IEnumerable<LabelEntity> UpdateLabel(long userID, string oldLabelName, string labelName);
+        public IEnumerable<LabelEntity> UpdateLabel(long userID, string oldLabelName, string labelName, long noteId);
 
         /// <summary>Removes the label.</summary>
         /// <param name="labelId">The label identifier.</param>

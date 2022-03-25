@@ -313,7 +313,7 @@
         /// <param name="noteId">The note identifier.</param>
         /// <param name="image">The image.</param>
         /// <returns>Upload Image</returns>
-        [HttpPost("ImageUpload")]
+        [HttpPost("{noteId}/ImageUpload")]
         public IActionResult UploadImage(long noteId, IFormFile image)
         {
             try

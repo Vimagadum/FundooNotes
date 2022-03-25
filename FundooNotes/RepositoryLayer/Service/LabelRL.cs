@@ -105,10 +105,10 @@
         /// <returns>
         /// Update Label
         /// </returns>
-        public IEnumerable<LabelEntity> UpdateLabel(long userID, string oldLabelName, string labelName)
+        public IEnumerable<LabelEntity> UpdateLabel(long userID, string oldLabelName, string labelName, long noteId)
         {
             IEnumerable<LabelEntity> labels;
-            labels = this.fundooContext.Label.Where(e => e.Id == userID && e.LabelName == oldLabelName).ToList();
+            labels = this.fundooContext.Label.Where(e => e.Id == userID && e.LabelName == oldLabelName && e.NotesId == noteId).ToList();
             if (labels != null)
             {
                 foreach (var label in labels)
