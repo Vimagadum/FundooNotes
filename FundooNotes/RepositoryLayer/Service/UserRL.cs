@@ -176,14 +176,14 @@
         /// <returns>
         /// Reset Password
         /// </returns>
-        public bool ResetPassword(string email, string password, string confirmPassword)
+        public bool ResetPassword(ResetPasswordModel resetPasswordModel, string email)
         {
             try
             {
-                if (password.Equals(confirmPassword))
+                if (resetPasswordModel.Password.Equals(resetPasswordModel.ConfirmPassword))
                 {
                     var user = this.fundooContext.User.Where(x => x.Email == email).FirstOrDefault();
-                    user.Password = this.PasswordEncrypt(confirmPassword);
+                    user.Password = this.PasswordEncrypt(resetPasswordModel.ConfirmPassword);
                     this.fundooContext.SaveChanges();
                     return true;
                 }

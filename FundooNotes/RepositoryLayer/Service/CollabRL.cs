@@ -42,7 +42,6 @@
             {
                 CollabEntity collaboration = new CollabEntity();
                 var user = this.fundooContext.User.Where(e => e.Email == collabModel.CollabEmail).FirstOrDefault();
-
                 var notes = this.fundooContext.Notes.Where(e => e.NotesId == collabModel.NotesId && e.Id == collabModel.Id).FirstOrDefault();
                 if (notes != null && user != null)
                 {

@@ -119,12 +119,12 @@
         /// <param name="confirmPassword">The confirm password.</param>
         /// <returns>Reset Password</returns>
         [HttpPut("ResetPassword")]
-        public IActionResult ResetPassword(string password, string confirmPassword)
+        public IActionResult ResetPassword(ResetPasswordModel resetPasswordModel)
         {
             try
             {
                 var email = this.User.FindFirst(ClaimTypes.Email).Value.ToString();
-                var result = this.userBL.ResetPassword(email, password, confirmPassword);
+                var result = this.userBL.ResetPassword(resetPasswordModel, email);
                 if (!result)
                 {
                     return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Enter valid password" });

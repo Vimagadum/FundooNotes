@@ -73,11 +73,11 @@
         /// <param name="password">The password.</param>
         /// <param name="confirmPassword">The confirm password.</param>
         /// <returns>Reset Password</returns>
-        public bool ResetPassword(string email, string password, string confirmPassword)
+        public bool ResetPassword(ResetPasswordModel resetPasswordModel, string email)
         {
             try
             {
-                return this.userRL.ResetPassword(email, password, confirmPassword);
+                return this.userRL.ResetPassword(resetPasswordModel, email);
             }
             catch (Exception)
             {
