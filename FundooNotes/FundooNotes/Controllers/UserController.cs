@@ -9,6 +9,7 @@
     using CommonLayer.Model;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
     using RepositoryLayer.Entity;
 
     /// <summary>
@@ -25,12 +26,19 @@
         private readonly IUserBL userBL;
 
         /// <summary>
+        /// The logger
+        /// </summary>
+        private readonly ILogger<UserController> _logger;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
-        /// <param name="userBL">The user BL.</param>
-        public UserController(IUserBL userBL)
+        /// <param name="userBL">The user bl.</param>
+        /// <param name="logger">The logger.</param>
+        public UserController(IUserBL userBL, ILogger<UserController> logger)
         {
             this.userBL = userBL;
+            this._logger = logger;
         }
 
         /// <summary>
@@ -46,16 +54,19 @@
                 var result = this.userBL.Registration(user);
                 if (result != null)
                 {
+                    _logger.LogInformation("Register successfull");
                     return this.Ok(new ExceptionModel<UserEntity> { Status = true, Message = "Registration Successfull", Data = result });
                 }
                 else
                 {
+                    _logger.LogError("Register Unsuccessfull");
                     return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Registration UnSuccessfull" });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return this.NotFound(new ExceptionModel<string> { Status = false, Message = "Registration UnSuccessfull" });
+                _logger.LogError(ex.ToString());
+                return this.NotFound(new ExceptionModel<string> { Status = false, Message = ex.Message});
             }
         }
 
@@ -72,17 +83,19 @@
                 var result = this.userBL.login(userLogin);
                 if (result != null)
                 {
+                    _logger.LogInformation("Login Unsuccessfull");
                     return this.Ok(new ExceptionModel<string> { Status = true, Message = "Login Successfull", Data=result});
                 }
                 else
                 {
+                    _logger.LogError("Login Unsuccessfull");
                     return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Enter valid email or password" });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return this.NotFound(new ExceptionModel<string> { Status = false, Message = "Enter valid email or password" });
-
+                _logger.LogError(ex.ToString());
+                return this.NotFound(new ExceptionModel<string> { Status = false, Message = ex.Message});
             }
         }
 
@@ -99,16 +112,19 @@
                 var result = this.userBL.ForgetPassword(email);
                 if (result != null)
                 {
+                    _logger.LogInformation("Forgotted the password");
                     return this.Ok(new ExceptionModel<string> { Status = true, Message = "mail sent Successfull"});
                 }
                 else
                 {
+                    _logger.LogError("forgetting password process Unsuccessfull");
                     return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Enter valid email or password" });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return this.NotFound(new ExceptionModel<string> { Status = false, Message = "Enter valid email or password" });
+                _logger.LogError(ex.ToString());
+                return this.NotFound(new ExceptionModel<string> { Status = false, Message = ex.Message });
             }
         }
 
@@ -127,16 +143,19 @@
                 var result = this.userBL.ResetPassword(resetPasswordModel, email);
                 if (!result)
                 {
+                    _logger.LogError("Reset Password Unsuccessfull");
                     return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Enter valid password" });
                 }
                 else
                 {
+                    _logger.LogInformation("Reset Password Successfull");
                     return this.Ok(new ExceptionModel<string> { Status = true, Message = "Reset Password Successfull" });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return this.BadRequest(new ExceptionModel<string> { Status = false, Message = "Enter valid password" });
+                _logger.LogInformation(ex.ToString());
+                return this.BadRequest(new ExceptionModel<string> { Status = false, Message = ex.Message });
             }
         }
     }
