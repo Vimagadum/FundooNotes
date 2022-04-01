@@ -20,6 +20,8 @@
     /// <seealso cref="RepositoryLayer.Interface.IUserRL" />
     public class UserRL : IUserRL
     {
+        string type = "Vinayakmagadum123456789";
+
         /// <summary>
         /// The FUNDOO context
         /// </summary>
@@ -35,10 +37,9 @@
         /// </summary>
         /// <param name="fundooContext">The FUNDOO context.</param>
         /// <param name="toolsettings">The TOOL SETTINGS.</param>
-        public UserRL(FundooContext fundooContext, IConfiguration toolsettings)
+        public UserRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
-            this.toolsettings = toolsettings;
         }
 
         /// <summary>
@@ -123,16 +124,17 @@
         /// <returns>Generate Security Token</returns>
         private string GenerateSecurityToken(string Email, long Id)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.toolsettings["Jwt:secretkey"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(type));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, Email),
                 new Claim("Id", Id.ToString())
             };
-            var token = new JwtSecurityToken(toolsettings["Jwt:Issuer"],
-              this.toolsettings["Jwt:Issuer"],
-              claims,
+            var token = new JwtSecurityToken(
+            //toolsettings["Jwt:Issuer"],
+            //  this.toolsettings["Jwt:Issuer"],
+            //  claims,
               expires: DateTime.Now.AddMinutes(60),
               signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
