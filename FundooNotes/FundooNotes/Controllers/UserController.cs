@@ -30,6 +30,9 @@
         /// </summary>
         private readonly ILogger<UserController> _logger;
 
+        string sessionName = "fullName";
+        string sessionEmail = "email";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
@@ -50,11 +53,15 @@
         {
             try
             {
+                HttpContext.Session.SetString(sessionName, user.FirstName);
+                HttpContext.Session.SetString(sessionEmail, user.Email);
                 var result = this.userBL.Registration(user);
                 if (result != null)
                 {
-                   // _logger.LogInformation("Register successfull");
-                    return this.Ok(new ExceptionModel<UserEntity> { Status = true, Message = "Registration Successfull", Data = result });
+                    string sName = HttpContext.Session.GetString(sessionName);
+                    string sEmail = HttpContext.Session.GetString(sessionEmail);
+                    // _logger.LogInformation("Register successfull");
+                    return this.Ok(new ExceptionModel<string> { Status = true, Message = "Registration Successfull", Data = "Session || Name : " + sName + "|| Email Id : " + sEmail });
                 }
                 else
                 {

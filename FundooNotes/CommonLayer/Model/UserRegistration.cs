@@ -24,7 +24,7 @@
 
         /// <summary>Gets or sets the email.</summary>
         /// <value>The email.</value>
-        [Required]
+        [Required]                                     
         [RegularExpression("^[A-Za-z0-9]{3,}([.][A-Za-z0-9]+)*[@][a-z]+[.][a-z]{3}?$", ErrorMessage = "Enter a valid email.")]
         public string Email { get; set; }
 

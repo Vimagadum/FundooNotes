@@ -60,6 +60,11 @@ namespace FundooNotes
             services.AddTransient<ICollabRL, CollabRL>();
             services.AddTransient<ILabelBL, LabelBL>();
             services.AddTransient<ILabelRL, LabelRL>();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = "localhost:6379";
@@ -120,7 +125,7 @@ namespace FundooNotes
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseSession();
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -138,6 +143,7 @@ namespace FundooNotes
             {
                 endpoints.MapControllers();
             });
+            
         }
     }
 }
