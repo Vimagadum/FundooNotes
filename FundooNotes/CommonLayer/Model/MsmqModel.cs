@@ -51,11 +51,11 @@
                 SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
                 {
                     Port = 587,
-                    Credentials = new NetworkCredential("alberto12345sam@gmail.com", "sam&12345"),
+                    Credentials = new NetworkCredential("vinayakmagadum031@gmail.com", "Vinu&123"),
                     EnableSsl = true
                 };
-                mailMessage.From = new MailAddress("alberto12345sam@gmail.com");
-                mailMessage.To.Add(new MailAddress("alberto12345sam@gmail.com"));
+                mailMessage.From = new MailAddress("vinayakmagadum031@gmail.com");
+                mailMessage.To.Add(new MailAddress("vinayakmagadum031@gmail.com"));
                 mailMessage.Body = token;
                 mailMessage.Subject = "Fundoo Note App Reset Link";
                 smtpClient.Send(mailMessage);

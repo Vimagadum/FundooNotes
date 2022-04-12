@@ -60,6 +60,14 @@ namespace FundooNotes
             services.AddTransient<ICollabRL, CollabRL>();
             services.AddTransient<ILabelBL, LabelBL>();
             services.AddTransient<ILabelRL, LabelRL>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                name: "AllowOrigin",
+              builder => {
+                  builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+              });
+            });
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(10);
                 options.Cookie.HttpOnly = true;
@@ -126,6 +134,7 @@ namespace FundooNotes
                 app.UseDeveloperExceptionPage();
             }
             app.UseSession();
+            app.UseCors("AllowOrigin");
             app.UseHttpsRedirection();
 
             app.UseRouting();

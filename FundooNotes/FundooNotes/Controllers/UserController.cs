@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using BusinessLayer.Interface;
     using CommonLayer.Model;
+    using Microsoft.AspNetCore.Cors;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -20,6 +21,7 @@
     [ApiController]
     public class UserController : ControllerBase
     {
+
         /// <summary>
         /// The user BL
         /// </summary>
@@ -53,15 +55,17 @@
         {
             try
             {
-                HttpContext.Session.SetString(sessionName, user.FirstName);
-                HttpContext.Session.SetString(sessionEmail, user.Email);
+                //HttpContext.Session.SetString(sessionName, user.FirstName);
+                //HttpContext.Session.SetString(sessionEmail, user.Email);
                 var result = this.userBL.Registration(user);
                 if (result != null)
                 {
-                    string sName = HttpContext.Session.GetString(sessionName);
-                    string sEmail = HttpContext.Session.GetString(sessionEmail);
+                    //string sName = HttpContext.Session.GetString(sessionName);
+                    //string sEmail = HttpContext.Session.GetString(sessionEmail);
                     // _logger.LogInformation("Register successfull");
-                    return this.Ok(new ExceptionModel<string> { Status = true, Message = "Registration Successfull", Data = "Session || Name : " + sName + "|| Email Id : " + sEmail });
+                    //return this.Ok(new ExceptionModel<string> { Status = true, Message = "Registration Successfull", Data = "Session || Name : " + sName + "|| Email Id : " + sEmail });
+                    return this.Ok(new ExceptionModel<UserEntity> { Status = true, Message = "Registration Successfull", Data = result });
+
                 }
                 else
                 {

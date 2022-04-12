@@ -23,12 +23,12 @@ namespace XUnittest
         {
             newContext = new DbContextOptionsBuilder<FundooContext>().UseSqlServer(connectionstring).Options;
         }
-        public UnitTest1()
-        {
-            var context = new FundooContext(newContext);
-            iuserRL = new UserRL(context);
-            iuserBL = new UserBL(iuserRL);
-        }
+        //public UnitTest1()
+        //{
+        //    var context = new FundooContext(newContext);
+        //    iuserRL = new UserRL(context);
+        //    iuserBL = new UserBL(iuserRL);
+        //}
         [Fact]
         public void RegisterApi_AddUser_return_OkResult()
         {

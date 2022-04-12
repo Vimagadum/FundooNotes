@@ -37,9 +37,10 @@
         /// </summary>
         /// <param name="fundooContext">The FUNDOO context.</param>
         /// <param name="toolsettings">The TOOL SETTINGS.</param>
-        public UserRL(FundooContext fundooContext)
+        public UserRL(FundooContext fundooContext, IConfiguration toolsettings)
         {
             this.fundooContext = fundooContext;
+            this.toolsettings = toolsettings;
         }
 
         /// <summary>
@@ -124,7 +125,7 @@
         /// <returns>Generate Security Token</returns>
         private string GenerateSecurityToken(string Email, long Id)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(type));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.toolsettings["Jwt:secretkey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
@@ -132,9 +133,9 @@
                 new Claim("Id", Id.ToString())
             };
             var token = new JwtSecurityToken(
-            //toolsettings["Jwt:Issuer"],
-            //  this.toolsettings["Jwt:Issuer"],
-            //  claims,
+            toolsettings["Jwt:Issuer"],
+              this.toolsettings["Jwt:Issuer"],
+              claims,
               expires: DateTime.Now.AddMinutes(60),
               signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
